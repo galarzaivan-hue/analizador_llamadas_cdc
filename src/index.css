@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cndc-blue: #005DAA;
+  --color-cndc-blue-dark: #003F75;
+  --color-cndc-blue-light: #1D7FD0;
+  --color-cndc-orange: #E8771A;
+  --color-cndc-orange-hover: #D4660B;
+  --color-cndc-yellow: #F3A100;
+  --color-cndc-bg: #F4F6F9;
+  --color-cndc-card: #0F172A;
+  --color-cndc-text: #1C2A39;
+}
+
+/* Custom scrollbar & CNDC styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+::-webkit-scrollbar-thumb {
+  background: #005DAA;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E8771A;
+}

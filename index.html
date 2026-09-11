@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoría Operativa SEP & Peritaje de Fallas</title>
+    <meta name="description" content="Sistema de Auditoría de Protocolos de Comunicación Operativa y Peritaje Técnico de Fallas en Sistemas Eléctricos de Potencia (SEP)" />
+    <meta property="og:title" content="Auditoría Operativa SEP & Peritaje de Fallas" />
+    <meta property="og:description" content="Sistema de Auditoría de Protocolos de Comunicación Operativa y Peritaje Técnico de Fallas en Sistemas Eléctricos de Potencia (SEP)" />
+    <script>
+      // Suppress unhandled extension errors (e.g. MetaMask, web3 browser extensions)
+      window.addEventListener(
+        'error',
+        function (event) {
+          if (
+            event &&
+            event.message &&
+            (event.message.includes('MetaMask') ||
+              event.message.includes('metamask') ||
+              event.message.includes('ethereum') ||
+              (event.filename && event.filename.includes('extension')))
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            return true;
+          }
+        },
+        true
+      );
+
+      window.addEventListener(
+        'unhandledrejection',
+        function (event) {
+          var reason = event ? event.reason : null;
+          var msg =
+            (reason && (reason.message || reason.stack || String(reason))) || '';
+          if (
+            msg.includes('MetaMask') ||
+            msg.includes('metamask') ||
+            msg.includes('ethereum') ||
+            msg.includes('extension')
+          ) {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+            return true;
+          }
+        },
+        true
+      );
+    </script>
+  </head>
+  <body class="bg-slate-900 text-slate-100 min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

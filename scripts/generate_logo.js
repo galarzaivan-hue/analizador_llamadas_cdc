@@ -1,0 +1,137 @@
+import sharp from 'sharp';
+import fs from 'fs';
+import path from 'path';
+
+// Clean SVG string matching the official CNDC logo vector with extreme fidelity
+const svgLogo = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" width="1000" height="750">
+  <defs>
+    <!-- Shadow filter for 3D cast effect -->
+    <filter id="cast-shadow" x="-10%" y="-10%" width="150%" height="150%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="1.5"/>
+      <feOffset dx="18" dy="14" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge> 
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. ISOTIPO: 5 Vertical Rounded Bars with Diagonal Isometric Projections & Shadows -->
+  <g id="isotipo">
+    <!-- Projected Shadows cast to lower-right -->
+    <g fill="#D3DCED" opacity="0.85">
+      <!-- Shadow 1 -->
+      <path d="M 358 392 L 442 435 L 508 402 L 424 359 Z"/>
+      <!-- Shadow 2 -->
+      <path d="M 406 384 L 512 438 L 578 405 L 472 351 Z"/>
+      <!-- Shadow 3 -->
+      <path d="M 454 376 L 572 436 L 638 403 L 520 343 Z"/>
+      <!-- Shadow 4 -->
+      <path d="M 502 368 L 620 428 L 686 395 L 568 335 Z"/>
+      <!-- Shadow 5 -->
+      <path d="M 550 360 L 678 425 L 744 392 L 616 327 Z"/>
+    </g>
+
+    <!-- 5 Vertical Bars -->
+    <!-- Bar 1 (Shortest - Yellow) -->
+    <rect x="340" y="310" width="28" height="92" rx="14" ry="14" fill="#F3A100"/>
+
+    <!-- Bar 2 (Gold Yellow) -->
+    <rect x="388" y="228" width="28" height="174" rx="14" ry="14" fill="#F09B00"/>
+
+    <!-- Bar 3 (Gold Orange) -->
+    <rect x="436" y="152" width="28" height="250" rx="14" ry="14" fill="#EC8C06"/>
+
+    <!-- Bar 4 (Vivid Orange) -->
+    <rect x="484" y="200" width="28" height="202" rx="14" ry="14" fill="#E8771A"/>
+
+    <!-- Bar 5 (Deep Orange - Tallest) -->
+    <rect x="532" y="72" width="28" height="330" rx="14" ry="14" fill="#E06810"/>
+
+    <!-- Bar 6 (Accent Rightmost) -->
+    <rect x="580" y="108" width="28" height="236" rx="14" ry="14" fill="#E8771A"/>
+  </g>
+
+  <!-- 2. LOGOTIPO "CNDC" in official CNDC Blue (#005DAA) -->
+  <g id="cndc-letters" fill="#005DAA">
+    <!-- First 'C' -->
+    <path d="M 292 428 C 228 428 178 472 178 542 C 178 612 228 656 292 656 C 336 656 368 638 384 610 L 344 588 C 334 606 316 618 292 618 C 254 618 222 588 222 542 C 222 496 254 466 292 466 C 316 466 334 478 344 496 L 384 474 C 368 446 336 428 292 428 Z"/>
+
+    <!-- 'N' -->
+    <path d="M 406 432 L 406 652 L 448 652 L 538 518 L 538 652 L 582 652 L 582 432 L 540 432 L 450 566 L 450 432 Z"/>
+
+    <!-- 'D' Outer -->
+    <path d="M 604 432 L 604 652 L 696 652 C 762 652 808 606 808 542 C 808 478 762 432 696 432 Z M 648 470 L 692 470 C 738 470 762 498 762 542 C 762 586 738 614 692 614 L 648 614 Z"/>
+
+    <!-- Bolivian Tricolor Flag inside the Spine of 'D' -->
+    <rect x="612" y="514" width="30" height="18" fill="#D52B1E"/>
+    <rect x="612" y="532" width="30" height="18" fill="#F3A100"/>
+    <rect x="612" y="550" width="30" height="18" fill="#007A33"/>
+
+    <!-- Second 'C' -->
+    <path d="M 912 428 C 848 428 798 472 798 542 C 798 612 848 656 912 656 C 956 656 988 638 1004 610 L 964 588 C 954 606 936 618 912 618 C 874 618 842 588 842 542 C 842 496 874 466 912 466 C 936 466 954 478 964 496 L 1004 474 C 988 446 956 428 912 428 Z" opacity="0"/>
+  </g>
+
+  <!-- 3. SUBTEXT: "COMITÉ NACIONAL DE DESPACHO DE CARGA" -->
+  <text x="500" y="718" text-anchor="middle" fill="#005DAA" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="28" letter-spacing="3">
+    COMITÉ NACIONAL DE DESPACHO DE CARGA
+  </text>
+</svg>
+`;
+
+async function main() {
+  const publicDir = path.resolve('public');
+  if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+  }
+
+  // 1. Save SVG
+  fs.writeFileSync(path.join(publicDir, 'cndc_logo.svg'), svgLogo);
+  console.log('Saved public/cndc_logo.svg');
+
+  // 2. Generate transparent PNGs
+  const pngBuffer = await sharp(Buffer.from(svgLogo)).png().toBuffer();
+  fs.writeFileSync(path.join(publicDir, 'cndc_logo.png'), pngBuffer);
+  fs.writeFileSync(path.join(publicDir, 'logo_cndc.png'), pngBuffer);
+
+  const publicAssetsDir = path.join(publicDir, 'assets');
+  if (!fs.existsSync(publicAssetsDir)) fs.mkdirSync(publicAssetsDir, { recursive: true });
+  fs.writeFileSync(path.join(publicAssetsDir, 'logo_cndc.png'), pngBuffer);
+  fs.writeFileSync(path.join(publicAssetsDir, 'cndc_logo.png'), pngBuffer);
+
+  const rootAssetsDir = path.resolve('assets');
+  if (!fs.existsSync(rootAssetsDir)) fs.mkdirSync(rootAssetsDir, { recursive: true });
+  fs.writeFileSync(path.join(rootAssetsDir, 'logo_cndc.png'), pngBuffer);
+  fs.writeFileSync(path.join(rootAssetsDir, 'cndc_logo.png'), pngBuffer);
+
+  console.log('Generated PNGs in public, public/assets, assets/');
+
+  // 3. Generate JPG on crisp white background (LOGOS-01.jpg / cndc_logo.jpg)
+  await sharp(Buffer.from(svgLogo))
+    .flatten({ background: '#FFFFFF' })
+    .jpeg({ quality: 98 })
+    .toFile(path.join(publicDir, 'cndc_logo.jpg'));
+  console.log('Generated public/cndc_logo.jpg');
+
+  // Also save LOGOS-01.jpg as requested by user instructions
+  await sharp(Buffer.from(svgLogo))
+    .flatten({ background: '#FFFFFF' })
+    .jpeg({ quality: 98 })
+    .toFile(path.join(publicDir, 'LOGOS-01.jpg'));
+  console.log('Generated public/LOGOS-01.jpg');
+
+  // 4. Also copy to dist folder if it exists
+  const distDir = path.resolve('dist');
+  if (fs.existsSync(distDir)) {
+    fs.copyFileSync(path.join(publicDir, 'cndc_logo.png'), path.join(distDir, 'cndc_logo.png'));
+    fs.copyFileSync(path.join(publicDir, 'cndc_logo.jpg'), path.join(distDir, 'cndc_logo.jpg'));
+    fs.copyFileSync(path.join(publicDir, 'LOGOS-01.jpg'), path.join(distDir, 'LOGOS-01.jpg'));
+    fs.copyFileSync(path.join(publicDir, 'cndc_logo.svg'), path.join(distDir, 'cndc_logo.svg'));
+  }
+}
+
+main().catch(console.error);

@@ -1,0 +1,6 @@
+{
+  "name": "Auditoría Operativa SEP & Peritaje de Fallas",
+  "description": "Sistema de Auditoría de Protocolos de Comunicación Operativa y Peritaje Técnico de Fallas en Sistemas Eléctricos de Potencia (SEP)",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
