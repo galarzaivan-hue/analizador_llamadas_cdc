@@ -631,9 +631,8 @@ export default function App() {
   // Vista principal: "audit" o "manual"
   const [viewMode, setViewMode] = useState("audit"); // "audit" | "manual"
 
-  // Telemetría CNDC en tiempo real
+  // Telemetría CNDC en tiempo real (Frecuencia nominal SIN Bolivia 50.00 Hz)
   const [gridFreq, setGridFreq] = useState("50.00");
-  const [systemNorm, setSystemNorm] = useState("50 Hz");
   const [currentTime, setCurrentTime] = useState("");
 
   // Pestañas de entrada
@@ -667,18 +666,17 @@ export default function App() {
     }
   });
 
-  // Reloj BOT y fluctuación realista de frecuencia
+  // Reloj CNDC y fluctuación realista de frecuencia SIN Bolivia (50.00 Hz)
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
       setCurrentTime(now.toLocaleTimeString("es-ES", { timeZone: "America/La_Paz" }));
-      // Leve fluctuación estocástica de frecuencia normal (49.97 - 50.03 Hz)
+      // Leve fluctuación estocástica de frecuencia normal (49.98 - 50.02 Hz) fijada en 50.00 Hz nominal
       const delta = (Math.random() - 0.5) * 0.04;
-      const base = systemNorm === "50 Hz" ? 50.00 : 60.00;
-      setGridFreq((base + delta).toFixed(2));
+      setGridFreq((50.00 + delta).toFixed(2));
     }, 1000);
     return () => clearInterval(timer);
-  }, [systemNorm]);
+  }, []);
 
   // Guardar API Key
   const handleSaveApiKey = (newKey) => {
@@ -962,24 +960,20 @@ Debes analizar la grabación o transcripción de la llamada operativa y devolver
 
           {/* Telemetría y Controles en Tiempo Real */}
           <div className="flex flex-wrap items-center justify-end gap-2 text-xs w-full md:w-auto">
-            {/* Monitor de Frecuencia */}
+            {/* Monitor de Frecuencia (SIN Bolivia - 50.00 Hz Nominal) */}
             <div className="flex items-center space-x-2 bg-[#F4F6F9] px-3 py-1.5 rounded-lg border border-slate-200">
               <Radio className="w-3.5 h-3.5 text-emerald-600 animate-pulse" />
-              <span className="text-slate-600 font-medium text-[11px]">Freq SEP:</span>
+              <span className="text-slate-600 font-medium text-[11px]">Freq SIN:</span>
               <span className="font-mono font-bold text-emerald-700 text-sm">{gridFreq} Hz</span>
-              <button
-                onClick={() => setSystemNorm(systemNorm === "50 Hz" ? "60 Hz" : "50 Hz")}
-                className="ml-1 text-[10px] font-bold text-[#005DAA] hover:bg-[#005DAA] hover:text-white bg-slate-200 px-1.5 py-0.5 rounded transition"
-                title="Cambiar norma 50Hz / 60Hz"
-              >
-                {systemNorm}
-              </button>
+              <span className="text-[10px] font-semibold text-[#005DAA] bg-blue-50 border border-blue-200/60 px-1.5 py-0.5 rounded">
+                50.00 Hz Nom.
+              </span>
             </div>
 
-            {/* Reloj BOT */}
+            {/* Reloj del Centro de Control CNDC */}
             <div className="hidden sm:flex items-center space-x-2 bg-[#F4F6F9] px-3 py-1.5 rounded-lg border border-slate-200 font-mono text-slate-700">
               <Clock className="w-3.5 h-3.5 text-[#005DAA]" />
-              <span className="text-[11px] font-semibold">{currentTime || "12:00:00"} BOT (UTC-4)</span>
+              <span className="text-[11px] font-semibold">{currentTime || "12:00:00"} Hora CNDC (UTC-4)</span>
             </div>
 
             {/* Estado Centro de Control */}
